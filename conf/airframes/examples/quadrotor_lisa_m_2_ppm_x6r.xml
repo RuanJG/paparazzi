@@ -19,9 +19,14 @@
       <subsystem name="fdm" type="jsbsim"/>
     </target>
 
+<!--
     <subsystem name="radio_control" type="ppm">
       <define name="RADIO_MODE" value="RADIO_AUX1"/>
       <configure name="RADIO_CONTROL_PPM_PIN" value="SERVO6"/>
+    </subsystem>
+-->
+    <subsystem name="radio_control"     type="sbus">
+      <configure name="SBUS_PORT" value="UART1"/>
     </subsystem>
 
     <subsystem name="motor_mixing"/>
