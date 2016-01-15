@@ -73,7 +73,7 @@
     <!-- order (and rotation direction) : NE (CW), SE (CCW), SW (CW), NW (CCW) -->
     <define name="ROLL_COEF"   value="{ 256, - 256,  -256, 256 }"/>
     <define name="PITCH_COEF"  value="{ 256, 256,  -256,  -256 }"/>
-    <define name="YAW_COEF"    value="{  -256, 256,  -256, 256 }"/>
+    <define name="YAW_COEF"    value="{  -256, 256,  -256,  256 }"/>
     <define name="THRUST_COEF" value="{  256,  256,  256,  256 }"/>
   </section>
 
@@ -83,7 +83,7 @@
     <set servo="FR" value="motor_mixing.commands[1]"/>
     <set servo="BR" value="motor_mixing.commands[2]"/>
     <set servo="BL" value="motor_mixing.commands[3]"/>
-  </command_laws>
+   </command_laws>
 
   <section name="IMU" prefix="IMU_">
 <!--
@@ -122,9 +122,9 @@
 
   <section name="AHRS" prefix="AHRS_">
     <!-- values used if no GPS fix, on 3D fix is update by geo_mag module -->
-    <define name="H_X" value="0.3770441"/>
-    <define name="H_Y" value="0.0193986"/>
-    <define name="H_Z" value="0.9259921"/>
+    <define name="H_X" value="0.8365196"/>
+    <define name="H_Y" value="-0.0386642"/>
+    <define name="H_Z" value="0.5465712"/>
   </section>
 
   <section name="STABILIZATION_RATE" prefix="STABILIZATION_RATE_">
