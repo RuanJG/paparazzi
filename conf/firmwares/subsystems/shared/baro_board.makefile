@@ -189,6 +189,13 @@ else ifeq ($(BOARD), umarim)
     BARO_BOARD_SRCS += boards/umarim/baro_board.c
   endif
 
+# ruan_lisam_2.1
+else ifeq ($(BOARD), ruan_lisa_m)
+    BARO_BOARD_CFLAGS += -DBARO_BOARD=BARO_BOARD_BMP085
+    BARO_BOARD_CFLAGS += -DUSE_I2C2
+    BARO_BOARD_SRCS += peripherals/bmp085.c
+    BARO_BOARD_SRCS += $(SRC_BOARD)/baro_board.c
+
 # Naze32
 else ifeq ($(BOARD), naze32)
     BARO_BOARD_CFLAGS += -DBARO_BOARD=BARO_MS5611_I2C
