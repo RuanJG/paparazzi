@@ -12,6 +12,9 @@
 
   <firmware name="rotorcraft">
     <target name="ap" board="ruan_lisa_m_2.1">
+    	<!-- use in  baro_board.makefile -->
+	<configure name="USE_BARO_BOARD" value="TRUE"/>
+	<define name="BARO_BOARD_I2C_DEV" value="i2c2"/>
       <!-- MPU6000 is configured to output data at 2kHz, but polled at 512Hz PERIODIC_FREQUENCY -->
     </target>
 
@@ -22,12 +25,15 @@
     <subsystem name="radio_control" type="ppm">
       <define name="RADIO_MODE" value="RADIO_AUX1"/>
       <configure name="RADIO_CONTROL_PPM_PIN" value="SERVO6"/>
+      <!--
+      <configure name="RADIO_CONTROL_PPM_PIN" value="UART1_RX"/>
+      -->
     </subsystem>
 
     <subsystem name="motor_mixing"/>
     <subsystem name="actuators"     type="pwm">
       <define name="SERVO_HZ" value="400"/>
-      <!--define name="USE_SERVOS_7AND8"/-->
+      <!--, do't use this define name="USE_SERVOS_7AND8"/-->
     </subsystem>
 
     <subsystem name="telemetry"     type="transparent"/>

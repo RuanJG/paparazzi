@@ -38,19 +38,19 @@ struct Bmp085 baro_bmp085;
 
 static bool_t baro_eoc(void)
 {
-  return gpio_get(GPIOB, GPIO0);
+  return gpio_get(BARO_EOC_GPIO, BARO_EOC_PIN);
 }
 
 void baro_init(void)
 {
-  bmp085_init(&baro_bmp085, &i2c2, BMP085_SLAVE_ADDR);
+  bmp085_init(&baro_bmp085, &(BARO_BOARD_I2C_DEV), BMP085_SLAVE_ADDR);
 
   /* setup eoc check function */
   baro_bmp085.eoc = &baro_eoc;
 
-  gpio_clear(GPIOB, GPIO0);
-  gpio_set_mode(GPIOB, GPIO_MODE_INPUT,
-                GPIO_CNF_INPUT_PULL_UPDOWN, GPIO0);
+  gpio_clear(BARO_EOC_GPIO, BARO_EOC_PIN);
+  gpio_set_mode(BARO_EOC_GPIO, GPIO_MODE_INPUT,
+                GPIO_CNF_INPUT_PULL_UPDOWN, BARO_EOC_PIN);
 
 #ifdef BARO_LED
   LED_OFF(BARO_LED);
