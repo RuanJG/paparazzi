@@ -9,13 +9,24 @@
 -->
 
 <airframe name="Quadrotor Ruan LisaM_2.1 pwm">
+  <firmware name="test_progs">
+    <target name="test_sys_time_timer" board="ruan_lisa_m_2.1"/>
+    <target name="test_ahrs" board="ruan_lisa_m_2.1">
+      <subsystem name="imu" type="mpu6000"/>
+      <subsystem name="ahrs" type="int_cmpl_quat"/>
+      <configure name="USE_MAGNETOMETER" value="FALSE"/>
+    </target>
+  </firmware>
 
   <firmware name="rotorcraft">
+    <!-- use in  baro_board.makefile -->
     <target name="ap" board="ruan_lisa_m_2.1">
-    	<!-- use in  baro_board.makefile -->
-	<configure name="USE_BARO_BOARD" value="TRUE"/>
-	<define name="BARO_BOARD_I2C_DEV" value="i2c2"/>
-      <!-- MPU6000 is configured to output data at 2kHz, but polled at 512Hz PERIODIC_FREQUENCY -->
+    	<define name="BARO_BOARD_I2C_DEV" value="i2c1"/>
+    	<define name="USE_I2C1" value="1"/>
+    	<define name="USE_BARO_BOARD" value="1"/>
+    	<define name="BARO_EOC_GPIO" value="GPIOA"/>
+    	<define name="BARO_EOC_PIN" value="GPIO11"/>
+    	<define name="BARO_BOARD_SEND_DATA"/>
     </target>
 
     <target name="nps" board="pc">
@@ -37,11 +48,11 @@
     </subsystem>
 
     <subsystem name="telemetry"     type="transparent"/>
-<!--
-    <subsystem name="imu"           type="aspirin_v2.2"/>
--->
-    <subsystem name="imu"           type="mpu60x0_i2c"/>
-      <configure name="IMU_MPU60X0_I2C_DEV" value="i2c2"/>
+
+    <subsystem name="imu"           type="mpu60x0_i2c">
+      <configure name="IMU_MPU60X0_I2C_DEV" value="i2c1"/>
+    </subsystem>
+
     <subsystem name="gps"           type="ublox"/>
     <subsystem name="stabilization" type="int_quat"/>
     <subsystem name="ahrs"          type="int_cmpl_quat">
@@ -68,8 +79,11 @@
 -->
   <modules main_freq="512">
     <load name="mag_hmc58xx.xml">
+    <!--
+      -->
       <define name="MODULE_HMC58XX_UPDATE_AHRS"/>
-      <configure name="MAG_HMC58XX_I2C_DEV" value="i2c2"/>
+      <define name="MODULE_HMC58XX_SYNC_SEND"/>
+      <configure name="MAG_HMC58XX_I2C_DEV" value="i2c1"/>
     </load>
     <load name="air_data.xml"/>
     <load name="gps_ubx_ucenter.xml"/>

@@ -360,11 +360,5 @@ empty: A12 A13 B... C... D...
 
 
 
-/*
- * baro pin ; add by ruan
- */
-#define BARO_EOC_GPIO GPIOA
-#define BARO_EOC_PIN GPIO11
-
 
 #endif /* CONFIG_LISA_M_2_1_H */
