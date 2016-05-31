@@ -5,9 +5,9 @@
 
 # check that onboard baro was not explicitly disabled with
 # <configure name="USE_BARO_BOARD" value="FALSE"/>
-
 USE_BARO_BOARD ?= TRUE
 ifeq ($(USE_BARO_BOARD), TRUE)
+
 
 # booz baro
 ifeq ($(BOARD), booz)
@@ -191,6 +191,12 @@ else ifeq ($(BOARD), umarim)
 
 # ruan_lisam_2.1
 else ifeq ($(BOARD), ruan_lisa_m)
+    BARO_BOARD_CFLAGS += -DBARO_BOARD=BARO_BOARD_BMP085
+    BARO_BOARD_SRCS += peripherals/bmp085.c
+    BARO_BOARD_SRCS += $(SRC_BOARD)/baro_board.c
+
+# ruan_apogee_v0
+else ifeq ($(BOARD),ruan_apogee)
     BARO_BOARD_CFLAGS += -DBARO_BOARD=BARO_BOARD_BMP085
     BARO_BOARD_SRCS += peripherals/bmp085.c
     BARO_BOARD_SRCS += $(SRC_BOARD)/baro_board.c
