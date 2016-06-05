@@ -24,11 +24,11 @@ FLASH_MODE ?= STLINK
 #
 # default LED configuration
 #
-RADIO_CONTROL_LED  ?= 1
+RADIO_CONTROL_LED  ?= 2
 BARO_LED           ?= none
 AHRS_ALIGNER_LED   ?= none
-GPS_LED            ?= 3
-SYS_TIME_LED       ?= 2
+GPS_LED            ?= 1
+SYS_TIME_LED       ?= 3
 
 #
 # default UART configuration (modem, gps, spektrum)
