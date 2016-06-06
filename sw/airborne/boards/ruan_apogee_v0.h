@@ -75,7 +75,27 @@ led: PC13 PC14 PC15
 #define ActuatorsDefaultInit() ActuatorsPwmInit()
 #define ActuatorsDefaultCommit() ActuatorsPwmCommit()
 
+
+/* Onboard ADCs */
+#define USE_AD_TIM4 1
+#define USE_ADC_1 1 // use for battery check
+
+#if USE_ADC_1
+#define AD1_1_CHANNEL 15
+#define ADC_1 AD1_1
+#define ADC_1_GPIO_PORT GPIOC
+#define ADC_1_GPIO_PIN GPIO5
+#endif
+/* allow to define ADC_CHANNEL_VSUPPLY in the airframe file*/
+#ifndef ADC_CHANNEL_VSUPPLY
+#define ADC_CHANNEL_VSUPPLY ADC_1
+#endif
+
 //#define DefaultVoltageOfAdc(adc) (0.006185*adc)
+#define DefaultVoltageOfAdc(adc) 12.0//(0.006185*adc)
+
+
+
 
 /* UART */
 #define UART1_GPIO_AF GPIO_AF7
