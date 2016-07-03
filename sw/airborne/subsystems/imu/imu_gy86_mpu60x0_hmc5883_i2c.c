@@ -69,7 +69,9 @@ PRINT_CONFIG_VAR(IMU_MPU60X0_ACCEL_RANGE)
 
 
 //add by ruan
-#ifndef GY86_DISABLE_INSIDE_HMC58xx
+#if GY86_DISABLE_INSIDE_HMC58xx
+//use extent mag sensor
+#else
 #define GY86_IMU_READ_HMC58xx
 #endif
 
@@ -110,6 +112,7 @@ example configure
 struct ImuMpu60x0 imu_mpu_i2c;
 #ifdef GY86_IMU_READ_HMC58xx
 bool_t imu_gy86_configure_mag_slave(Mpu60x0ConfigSet mpu_set, void *mpu);
+struct i2c_transaction hmc58xx_trans;
 #endif
 
 void imu_impl_init(void)
@@ -130,6 +133,8 @@ void imu_impl_init(void)
   imu_mpu_i2c.mpu.config.i2c_mst_clk = MPU60X0_MST_CLK_400KHZ;
   /* Enable I2C slave0 delayed sample rate */
   imu_mpu_i2c.mpu.config.i2c_mst_delay = 1;
+  hmc58xx_trans.slave_addr = HMC58XX_ADDR;
+  hmc58xx_trans.status = I2CTransSuccess;
 #endif
 }
 
@@ -168,77 +173,125 @@ void imu_mpu_i2c_event(void)
 
 #ifdef GY86_IMU_READ_HMC58xx
 
+#if 0
+#include "mcu_periph/uart.h"
+static void putchar(char c){
+		uart_put_byte(&uart1,c);
+}
+#else
+#define putchar(x) 
+#endif
+
 #include "mcu_periph/sys_time.h"
 static inline void mpu_set_and_wait(Mpu60x0ConfigSet mpu_set, void *mpu, uint8_t _reg, uint8_t _val)
 {
-  mpu_set(mpu, _reg, _val);
-  while (imu_mpu_i2c.mpu.i2c_trans.status != I2CTransSuccess);
+	
+  volatile float s;
+  while (imu_mpu_i2c.mpu.i2c_trans.status < I2CTransSuccess);
+  do{
+  	mpu_set(mpu, _reg, _val);
+	s = get_sys_time_float()+0.1 ;
+	while( get_sys_time_float() >= s );
+  	while (imu_mpu_i2c.mpu.i2c_trans.status < I2CTransSuccess);
+  }while (imu_mpu_i2c.mpu.i2c_trans.status != I2CTransSuccess);
 }
-static void mpu_wait_slave4_ready(void)
+
+static inline bool_t hmc58xx_set_reg(uint8_t reg, uint8_t val)
 {
-	volatile uint32_t i;
-	volatile float s;
-
-	while (imu_mpu_i2c.mpu.i2c_trans.status != I2CTransSuccess);
-	while( 1 ){
-		imu_mpu_i2c.mpu.i2c_trans.buf[0] = MPU60X0_REG_I2C_MST_STATUS| MPU60X0_SPI_READ;
-		i2c_transceive(imu_mpu_i2c.mpu.i2c_p, &(imu_mpu_i2c.mpu.i2c_trans), imu_mpu_i2c.mpu.i2c_trans.slave_addr, 1, 2);
-		i=5;
-		while( i-- > 0 ){
-  			if(imu_mpu_i2c.mpu.i2c_trans.status != I2CTransSuccess){
-				s = get_sys_time_float()+0.01 ;//10ms
-				while( get_sys_time_float() >= s );
-			}else
-				break;
-		}
-		if( imu_mpu_i2c.mpu.i2c_trans.status == I2CTransSuccess ){
-			if( bit_is_set(imu_mpu_i2c.mpu.i2c_trans.buf[1],MPU60X0_I2C_SLV4_DONE) ){
-				break;
-			}
-		}
-		s = get_sys_time_float()+0.01 ;//10ms
-		while( get_sys_time_float() >= s );
-	}
+	bool_t ok;	
+  	while (hmc58xx_trans.status < I2CTransSuccess);
+	hmc58xx_trans.buf[0]=reg;
+	hmc58xx_trans.buf[1]=val;
+	ok = i2c_transceive(imu_mpu_i2c.mpu.i2c_p, &(hmc58xx_trans), hmc58xx_trans.slave_addr , 2, 0);
+	while(hmc58xx_trans.status < I2CTransSuccess); 
+	return (ok && (hmc58xx_trans.status == I2CTransSuccess) );
 }
-
+static inline bool_t hmc58xx_get_reg(uint8_t reg, uint8_t *val)
+{
+	bool_t ok;	
+  	while (hmc58xx_trans.status < I2CTransSuccess);
+	hmc58xx_trans.buf[0]=reg;
+	ok = i2c_transceive(imu_mpu_i2c.mpu.i2c_p, &(hmc58xx_trans), hmc58xx_trans.slave_addr , 1, 1);
+	while(hmc58xx_trans.status < I2CTransSuccess); 
+	
+	if(ok && (hmc58xx_trans.status == I2CTransSuccess) ){
+		*val = hmc58xx_trans.buf[0];
+		return TRUE;
+	}else
+		return FALSE;
+}
+static void hmc58xx_set_and_check(uint8_t reg, uint8_t val)
+{
+	volatile float s;
+	uint8_t new_val;
+	do{
+		putchar('+');
+		if( hmc58xx_set_reg(reg,val) ==FALSE )
+			continue;
+		putchar('+');
+		if( hmc58xx_get_reg(reg, &new_val) == FALSE )
+			continue;
+		putchar('+');
+		if( new_val == val ) 
+			break;
+		s = get_sys_time_float()+0.10 ;//100ms
+		while( get_sys_time_float() >= s );
+	}while(1);
+	putchar('0');
+}
 /** function to configure hmc5883 mag
  * @return TRUE if mag configuration finished
  */
 bool_t imu_gy86_configure_mag_slave(Mpu60x0ConfigSet mpu_set, void *mpu)
 {
+  struct Mpu60x0_I2c *mpu_i2c = (struct Mpu60x0_I2c *)(mpu);
+
   // wait before starting the configuration of the HMC58xx mag
   // doing to early may void the mode configuration
   if (get_sys_time_float() < GY86_MAG_STARTUP_DELAY) {
     return FALSE;
   }
 
+#if 1
+  	hmc58xx_trans.status = mpu_i2c->i2c_trans.status;
+	hmc58xx_set_and_check(HMC58XX_REG_CFGA,HMC58XX_CRA);
+	hmc58xx_set_and_check(HMC58XX_REG_CFGB,HMC58XX_CRB);
+	hmc58xx_set_and_check(HMC58XX_REG_MODE,HMC58XX_MD);
+  	mpu_i2c->i2c_trans.status = hmc58xx_trans.status;
+#else
+ do{
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_ADDR, (HMC58XX_ADDR >> 1));
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_REG, HMC58XX_REG_CFGA);
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_DO, HMC58XX_CRA);
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_CTRL, (1 << 7)); // Slave 4 enable
+  }while(0 == mpu_wait_slave4_ready());
 
-  mpu_wait_slave4_ready();
+  putchar('b');
 
+do{
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_ADDR, (HMC58XX_ADDR >> 1));
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_REG, HMC58XX_REG_CFGB);
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_DO, HMC58XX_CRB);
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_CTRL, (1 << 7)); // Slave 4 enable
+  }while(0 == mpu_wait_slave4_ready());
 
-  mpu_wait_slave4_ready();
+  putchar('c');
 
+do{
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_ADDR, (HMC58XX_ADDR >> 1));
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_REG, HMC58XX_REG_MODE);
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_DO, HMC58XX_MD);
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV4_CTRL, (1 << 7)); // Slave 4 enable
+  }while(0 == mpu_wait_slave4_ready());
+#endif
 
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV0_ADDR, (HMC58XX_ADDR >> 1) | MPU60X0_SPI_READ);
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV0_REG, HMC58XX_REG_DATXM);
-  // Put the enable command as last.
   mpu_set_and_wait(mpu_set, mpu, MPU60X0_REG_I2C_SLV0_CTRL,
                    (1 << 7) |    // Slave 0 enable
                    (6 << 0));    // Read 6 bytes
 
   return TRUE;
 }
-#endif
+#endif //GY86_IMU_READ_HMC58xx
 

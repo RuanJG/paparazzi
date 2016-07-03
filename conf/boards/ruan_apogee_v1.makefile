@@ -34,10 +34,10 @@ SYS_TIME_LED       ?= 3
 # default UART configuration (modem, gps, spektrum)
 #
 
-MODEM_PORT ?= UART3
+MODEM_PORT ?= UART1
 MODEM_BAUD ?= B57600
 
-GPS_PORT ?= UART1
+GPS_PORT ?= UART3
 GPS_BAUD ?= B38400
 
 #config sbus in ap xml file

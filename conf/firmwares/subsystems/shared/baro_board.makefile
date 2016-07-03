@@ -207,7 +207,7 @@ else ifeq ($(BOARD), ruan_apogee_v1)
   BARO_BOARD_CFLAGS += -DBB_MS5611_I2C_DEV=i2c1
   BARO_BOARD_SRCS += peripherals/ms5611.c
   BARO_BOARD_SRCS += peripherals/ms5611_i2c.c
-  BARO_BOARD_SRCS += boards/baro_board_ms5611_i2c.c
+  BARO_BOARD_SRCS += $(SRC_BOARD)/baro_board_ms5611_i2c.c
 
 # Naze32
 else ifeq ($(BOARD), naze32)
