@@ -1,3 +1,74 @@
+Paparazzi v5.8.2_stable
+=======================
+
+Maintenance release.
+
+- ground_segment: fix ant_track compilation
+- docker: use Ubuntu 16.04 and various fixes
+- energy ctrl: fix accel conversion for correct vdot
+- system: update udev rules to detect Lisa/M v2.1 correctly
+- cockpit: workaround lablgtk 2.18 Debian/Ubuntu bug
+- modules: fix gps_ublox for fixedwings
+
+Paparazzi v5.8.1_stable
+=======================
+
+Maintenance release.
+
+- ground segment: python tools fixes
+- module: stereocam2state improvements/fixes
+  [#1490] (https://github.com/paparazzi/paparazzi/pull/1490)
+- module: fix gps_ublox
+- boards: naze32: default to SERIAL (USB) flash mode
+- generators: always put configure options at beginning
+  [#1517] (https://github.com/paparazzi/paparazzi/pull/1517)
+- generators: varous fixes for loading of modules and subsystems
+- drivers: fix regression of wrong magnetometer axis on Parrot Bebop
+
+Paparazzi v5.8.0_stable
+=======================
+
+Stable version release.
+
+- module: nav_catapult: avoid conditional directives
+  [#1454] (https://github.com/paparazzi/paparazzi/pull/1454)
+- module: gps_ubx_ucenter fix autobaud and autoconf for ublox-8
+  [#1480] (https://github.com/paparazzi/paparazzi/pull/1480)
+- module: add stereocam2state which publishes a VELOCITY_ESTIMATE from stereocam
+  [#1486] (https://github.com/paparazzi/paparazzi/pull/1486)
+- arch/linux: I2C: use repeated-start for transceive as required by some sensors
+  [#1469] (https://github.com/paparazzi/paparazzi/pull/1469)
+- remove unused libeknav and fms folder
+  [#1487] (https://github.com/paparazzi/paparazzi/pull/1487)
+
+Paparazzi 5.7.1_testing
+=======================
+
+Second release candidate for v5.8 stable release.
+
+- SPI slave implemented and tested for STM32F4
+  [#1456] (https://github.com/paparazzi/paparazzi/pull/1456)
+- Added support for Elle0 V1.2
+  [#1465] (https://github.com/paparazzi/paparazzi/pull/1465)
+- Bebop: fix motor directions
+  [#1466] (https://github.com/paparazzi/paparazzi/pull/1466)
+  [#1468] (https://github.com/paparazzi/paparazzi/pull/1468)
+  [#1474] (https://github.com/paparazzi/paparazzi/pull/1474)
+- stereo camera modules: obstacle avoidance and follow me
+  [#1462] (https://github.com/paparazzi/paparazzi/pull/1462)
+  [#1472] (https://github.com/paparazzi/paparazzi/pull/1472)
+  [#1473] (https://github.com/paparazzi/paparazzi/pull/1473)
+- fix video_rtp_stream and bebop_front_camera if not using UDP for telemetry
+- modules xml requires doc and description now
+- Modules can be used like subsystems in airframe files
+  [#1471] (https://github.com/paparazzi/paparazzi/pull/1471)
+- rotorcraft rate controller setpoints in deg/s
+  [#1479] (https://github.com/paparazzi/paparazzi/pull/1479)
+- Guided mode for rotorcrafts
+  [#1457] (https://github.com/paparazzi/paparazzi/pull/1457)
+- naze32: PPM input on PA0 by default
+  [#1481] (https://github.com/paparazzi/paparazzi/pull/1481)
+
 Paparazzi 5.7.0_testing
 =======================
 

@@ -58,6 +58,7 @@ paparazzi.sublime-workspace
 /conf/conf.xml.20*
 /conf/conf_personal.xml.20*
 /conf/control_panel.xml
+/conf/control_panel.xml.20*
 /conf/%gconf.xml
 /conf/maps_data/*
 /conf/maps.xml
@@ -103,6 +104,7 @@ paparazzi.sublime-workspace
 /sw/ground_segment/tmtc/app_server
 /sw/ground_segment/tmtc/gpsd2ivy
 /sw/ground_segment/tmtc/ivy2nmea
+/sw/ground_segment/tmtc/ivy2serial
 
 # /sw/ground_segment/joystick
 /sw/ground_segment/joystick/input2ivy
@@ -185,3 +187,8 @@ tests/results/*
 
 *.dSYM
 
+# K-develop
+*.kate-swp
+
+# Future
+/sw/ext/pprzlink
