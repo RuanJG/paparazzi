@@ -318,4 +318,15 @@
    settings_modules="modules/air_data.xml modules/gps_ubx_ucenter.xml"
    gui_color="white"
   />
+  <aircraft
+   name="Ruan_QFlightFMU_V1_Fixwind"
+   ac_id="68"
+   airframe="airframes/examples/fixwind_ruan_apogee_v1.xml"
+   radio="radios/WTF07_ppm.xml"
+   telemetry="telemetry/default_fixedwing_imu.xml"
+   flight_plan="flight_plans/nav_modules.xml"
+   settings="settings/fixedwing_basic.xml settings/control/ctl_basic.xml settings/control/ctl_dash_loiter_trim.xml settings/nps.xml"
+   settings_modules="modules/air_data.xml modules/nav_smooth.xml modules/nav_survey_poly_osam.xml"
+   gui_color="blue"
+  />
 </conf>
