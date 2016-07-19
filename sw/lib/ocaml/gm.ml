@@ -46,6 +46,9 @@ let string_of_maps_source = function
 Google -> "Google" | OSM -> "OpenStreetMap" | MS -> "Bing" | MQ -> "MapQuest OSM" | MQ_Aerial -> "MapQuest Open Aerial"
 
 let maps_source = ref Google
+(* add by RuanJG for default Bing Map --------> *)
+let maps_source = ref MS
+(* add by RuanJG for default Bing Map <-------- *)
 let set_maps_source = fun s -> maps_source := s
 let get_maps_source = fun () -> !maps_source
 
