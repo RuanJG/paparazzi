@@ -72,8 +72,8 @@
 
   <servos>
     <servo name="MOTOR"         no="0" min="1000" neutral="1000" max="2000"/>
-    <servo name="AILEVON_LEFT"  no="1" min="1000" neutral="1500" max="2000"/>
-    <servo name="AILEVON_RIGHT" no="2" min="2000" neutral="1500" max="1000"/>
+    <servo name="AILEVON"  no="1" min="2000" neutral="1500" max="1000"/>
+    <servo name="PITCH_SERVO" no="2" min="1000" neutral="1500" max="2000"/>
   </servos>
 
   <commands>
@@ -90,16 +90,12 @@
   </rc_commands>
 
   <section name="MIXER">
-    <define name="AILEVON_AILERON_RATE" value="0.75"/>
-    <define name="AILEVON_ELEVATOR_RATE" value="0.75"/>
   </section>
 
   <command_laws>
-    <let var="aileron"  value="@ROLL  * AILEVON_AILERON_RATE"/>
-    <let var="elevator" value="@PITCH * AILEVON_ELEVATOR_RATE"/>
     <set servo="MOTOR"         value="@THROTTLE"/>
-    <set servo="AILEVON_LEFT"  value="$elevator - $aileron"/>
-    <set servo="AILEVON_RIGHT" value="$elevator + $aileron"/>
+    <set servo="AILEVON"  value="@ROLL"/>
+    <set servo="PITCH_SERVO" value="@PITCH"/>
   </command_laws>
 
   <section name="IMU" prefix="IMU_">
@@ -123,7 +119,7 @@
 -->
     <define name="BODY_TO_IMU_PHI"   value="0." unit="deg"/>
     <define name="BODY_TO_IMU_THETA" value="0." unit="deg"/>
-    <define name="BODY_TO_IMU_PSI"   value="270." unit="deg"/>
+    <define name="BODY_TO_IMU_PSI"   value="0." unit="deg"/>
   </section>
 
   <section name="INS" prefix="INS_">

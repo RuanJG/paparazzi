@@ -12,17 +12,17 @@ C10,C11: uart3(af7) (modem txrx)
 C6 tim8_1 ppm
 C7 uart6_rx sbus
 
-now use i2c1,i2c2,uart1(GPS),uart3(debug,flash)
+now use i2c1,uart1(GPS),uart3(debug,flash,modem), a3->adc
 
 pwm pin list :
 b8(can1,i2c1)
 b9(can1,i2c1)
-a0(tim5_1)
-a1(tim5_2)
-a2(tim5_3)
-b1(tim3_4)
-b0(tim3_3)
-a3(tim5_4)
+a0(tim5_1) pwm0
+a1(tim5_2) pwm1
+a2(tim5_3) pwm2
+b1(tim3_4) pwm3
+b0(tim3_3) pwm4
+a3(tim5_4) (power) 
 c7(tim3_2/tim8_2/uart6_rx sbus)
 c6(ppm,tim3_1/tim8_1/uart6_tx sbus)
 
@@ -106,19 +106,20 @@ led: PC13 PC14 PC15
 #define UART1_GPIO_TX GPIO6
 //baud define in board makefile
 
-/* V0
+// V0
 #define UART3_GPIO_AF GPIO_AF7
 #define UART3_GPIO_PORT_RX GPIOC
 #define UART3_GPIO_RX GPIO11
 #define UART3_GPIO_PORT_TX GPIOC
 #define UART3_GPIO_TX GPIO10
-*/
+
+
 //use imu tx rx
-#define UART3_GPIO_AF GPIO_AF7
-#define UART3_GPIO_PORT_RX GPIOB
-#define UART3_GPIO_RX GPIO11
-#define UART3_GPIO_PORT_TX GPIOB
-#define UART3_GPIO_TX GPIO10
+//#define UART3_GPIO_AF GPIO_AF7
+//#define UART3_GPIO_PORT_RX GPIOB
+//#define UART3_GPIO_RX GPIO11
+//#define UART3_GPIO_PORT_TX GPIOB
+//#define UART3_GPIO_TX GPIO10
 
 
 #define UART6_GPIO_AF GPIO_AF8
